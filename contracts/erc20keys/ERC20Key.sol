@@ -42,4 +42,8 @@ contract ERC20Key is ERC20, AccessControl {
             _approve(accounts[j], cryptotreasure, MAX_UINT);
         }
     }
+
+    function decimals() public pure override returns (uint8) {
+        return 0;
+    }
 }
