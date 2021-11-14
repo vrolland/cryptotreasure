@@ -118,6 +118,13 @@ contract CryptoTreasure is
         _storeRestrictedToOwnerAndApproval[tokenId] =
             Bytes._bytesToUint8(data, 0) == 1;
 
+        uint256 destroyLockDuration = _lockedDestructionDuration[typeId];
+        if (destroyLockDuration != 0) {
+            _lockedDestructionEnd[tokenId] =
+                block.timestamp +
+                destroyLockDuration;
+        }
+
         // return the token id
         return tokenId;
     }
@@ -149,10 +156,17 @@ contract CryptoTreasure is
         // mint the tokens
         tokensMinted = super._safeBatchMintByType(to, typeId, data);
 
+        uint256 destroyLockDuration = _lockedDestructionDuration[typeId];
+
         // define the restriction mode
         for (uint256 j = 0; j < to.length; j++) {
             _storeRestrictedToOwnerAndApproval[tokensMinted[j]] =
                 Bytes._bytesToUint8(data, 0) == 1;
+            if (destroyLockDuration != 0) {
+                _lockedDestructionEnd[tokensMinted[j]] =
+                    block.timestamp +
+                    destroyLockDuration;
+            }
         }
     }
 

@@ -1,4 +1,8 @@
-const { addTypeParamToBytes, mintParamToBytes } = require("../utils");
+const {
+  addTypeParamToBytes,
+  mintParamToBytes,
+  mintByTypeParamToBytes,
+} = require("../utils");
 const { expectEvent, expectRevert } = require("@openzeppelin/test-helpers");
 const { ethers } = require("ethers");
 
@@ -692,6 +696,118 @@ contract("CryptoTreasure destroy", (accounts) => {
           }
         );
         expect(await cryptoTreasure.destroyedBoxes(boxId)).to.be.true;
+      });
+    });
+
+    describe("destroy a time-locked treasure (mint by type)", async () => {
+      const destroyTimeLockDuration = "3"; // 3 sec
+      beforeEach(async () => {
+        await cryptoTreasure.addType(
+          typeFreeId,
+          typeFreeFrom,
+          typeFreeTo,
+          addTypeParamToBytes(0, 0, destroyTimeLockDuration),
+          { from: adminAccount }
+        );
+        await cryptoTreasure.safeMintByType(
+          reqHolderAccount,
+          typeFreeId,
+          mintByTypeParamToBytes(),
+          { from: reqHolderAccount }
+        );
+      });
+
+      it("cannot destroy a time-locked treasure before before the deadline", async () => {
+        await expectRevert(
+          cryptoTreasure.destroy(
+            typeFreeFrom,
+            "0",
+            [],
+            [],
+            [],
+            ethers.constants.AddressZero,
+            { from: reqHolderAccount }
+          ),
+          "e17"
+        );
+      });
+      it("can destroy a time-locked treasure some period after its creation", async () => {
+        // Wait a bit...
+        await sleep(3000);
+        const receipt = await cryptoTreasure.destroy(
+          typeFreeFrom,
+          "0",
+          [],
+          [],
+          [],
+          ethers.constants.AddressZero,
+          { from: reqHolderAccount }
+        );
+        await expectEvent.inTransaction(
+          receipt.tx,
+          cryptoTreasure,
+          "Destroyed",
+          {
+            boxId: typeFreeFrom,
+          }
+        );
+        expect(await cryptoTreasure.destroyedBoxes(typeFreeFrom)).to.be.true;
+      });
+    });
+
+    describe("destroy a time-locked treasure (mint by batch)", async () => {
+      const destroyTimeLockDuration = "3"; // 3 sec
+      beforeEach(async () => {
+        await cryptoTreasure.addType(
+          typeFreeId,
+          typeFreeFrom,
+          typeFreeTo,
+          addTypeParamToBytes(0, 0, destroyTimeLockDuration),
+          { from: adminAccount }
+        );
+        await cryptoTreasure.safeBatchMintByType(
+          [reqHolderAccount],
+          typeFreeId,
+          mintByTypeParamToBytes(),
+          { from: adminAccount }
+        );
+      });
+
+      it("cannot destroy a time-locked treasure before before the deadline", async () => {
+        await expectRevert(
+          cryptoTreasure.destroy(
+            typeFreeFrom,
+            "0",
+            [],
+            [],
+            [],
+            ethers.constants.AddressZero,
+            { from: reqHolderAccount }
+          ),
+          "e17"
+        );
+      });
+      it("can destroy a time-locked treasure some period after its creation", async () => {
+        // Wait a bit...
+        await sleep(3000);
+        const receipt = await cryptoTreasure.destroy(
+          typeFreeFrom,
+          "0",
+          [],
+          [],
+          [],
+          ethers.constants.AddressZero,
+          { from: reqHolderAccount }
+        );
+        await expectEvent.inTransaction(
+          receipt.tx,
+          cryptoTreasure,
+          "Destroyed",
+          {
+            boxId: typeFreeFrom,
+          }
+        );
+        expect(await cryptoTreasure.destroyedBoxes(typeFreeFrom)).to.be.true;
       });
     });
   });
