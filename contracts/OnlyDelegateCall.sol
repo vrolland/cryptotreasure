@@ -14,12 +14,12 @@ contract OnlyDelegateCall {
     constructor() {
         thisVeryContract = address(this);
     }
-    
+
     /**
      * @dev Modifier throwing if the function is not called through a delegate call
      */
     modifier onlyDelegateCall() {
-        require(address(this) != thisVeryContract, 'only delegateCall');
+        require(address(this) != thisVeryContract, "only delegateCall");
         _;
     }
 }

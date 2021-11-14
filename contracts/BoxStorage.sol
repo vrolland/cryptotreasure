@@ -10,7 +10,7 @@ abstract contract BoxStorage {
     // ERC721: Mapping from hash(boxId, tokenAddress, tokenId) to 1 (owned) / 0 (not owned)
     // ER1155: Mapping from hash(boxId, tokenAddress, tokenId) to balance
     mapping(bytes32 => uint256) public _indexedTokens;
-    
+
     // ETH: Mapping from boxId to balance
     mapping(uint256 => uint256) public _indexedEth;
 

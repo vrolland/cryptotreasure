@@ -14,7 +14,11 @@ import "./BoxWithTimeLock.sol";
  * @notice The types define the timestamp from when it is allowed for non admin to mint a crypto treasure
  * @notice The types define a number of crypto treasure reserved for the admins
  */
-contract CryptoTreasure is BoxWithTimeLock, ERC721TypedMintByLockingERC20, AccessControl {
+contract CryptoTreasure is
+    BoxWithTimeLock,
+    ERC721TypedMintByLockingERC20,
+    AccessControl
+{
     string private baseURI = "https://crypto-treasures.com/treasure-metadata/";
 
     // Mapping from box id to restriction
@@ -37,7 +41,10 @@ contract CryptoTreasure is BoxWithTimeLock, ERC721TypedMintByLockingERC20, Acces
      * @notice add msg.sender as DEFAULT_ADMIN_ROLE
      * @param _baseBoxAddress boxBase address
      */
-    constructor(address _baseBoxAddress) ERC721TypedMintByLockingERC20("CryptoTreasures", "CTR") BoxWithTimeLock(_baseBoxAddress) {
+    constructor(address _baseBoxAddress)
+        ERC721TypedMintByLockingERC20("CryptoTreasures", "CTR")
+        BoxWithTimeLock(_baseBoxAddress)
+    {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
 
@@ -58,18 +65,25 @@ contract CryptoTreasure is BoxWithTimeLock, ERC721TypedMintByLockingERC20, Acces
         address to,
         uint256 boxId,
         bytes memory data
-    ) nonReentrant external {
+    ) external nonReentrant {
         super._safeMint(to, boxId, data);
 
         uint256 typeId = _tokenTypes[boxId];
-        require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) || boxId <= _lastIdNotReserved[typeId], "e22");
-        require(_mintStartTimestamp[typeId] <= block.timestamp, 'e19');
+        require(
+            hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) ||
+                boxId <= _lastIdNotReserved[typeId],
+            "e22"
+        );
+        require(_mintStartTimestamp[typeId] <= block.timestamp, "e19");
 
-        _storeRestrictedToOwnerAndApproval[boxId] = Bytes._bytesToUint8(data, 32) == 1;
+        _storeRestrictedToOwnerAndApproval[boxId] =
+            Bytes._bytesToUint8(data, 32) == 1;
 
         uint256 destroyLockDuration = _lockedDestructionDuration[typeId];
-        if(destroyLockDuration != 0) {
-            _lockedDestructionEnd[boxId] = block.timestamp + destroyLockDuration;
+        if (destroyLockDuration != 0) {
+            _lockedDestructionEnd[boxId] =
+                block.timestamp +
+                destroyLockDuration;
         }
     }
 
@@ -90,14 +104,19 @@ contract CryptoTreasure is BoxWithTimeLock, ERC721TypedMintByLockingERC20, Acces
         address to,
         uint256 typeId,
         bytes memory data
-    ) nonReentrant external returns (uint256) {
-        require(_mintStartTimestamp[typeId] <= block.timestamp, 'e19');
+    ) external nonReentrant returns (uint256) {
+        require(_mintStartTimestamp[typeId] <= block.timestamp, "e19");
 
         // mint the token
         uint256 tokenId = _safeMintByType(to, typeId, data);
-        require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) || tokenId <= _lastIdNotReserved[typeId], "e22");
+        require(
+            hasRole(DEFAULT_ADMIN_ROLE, _msgSender()) ||
+                tokenId <= _lastIdNotReserved[typeId],
+            "e22"
+        );
 
-        _storeRestrictedToOwnerAndApproval[tokenId] = Bytes._bytesToUint8(data, 0) == 1; 
+        _storeRestrictedToOwnerAndApproval[tokenId] =
+            Bytes._bytesToUint8(data, 0) == 1;
 
         // return the token id
         return tokenId;
@@ -121,13 +140,19 @@ contract CryptoTreasure is BoxWithTimeLock, ERC721TypedMintByLockingERC20, Acces
         address[] calldata to,
         uint256 typeId,
         bytes memory data
-    ) nonReentrant external onlyRole(DEFAULT_ADMIN_ROLE) returns (uint256[] memory tokensMinted) {
+    )
+        external
+        nonReentrant
+        onlyRole(DEFAULT_ADMIN_ROLE)
+        returns (uint256[] memory tokensMinted)
+    {
         // mint the tokens
         tokensMinted = super._safeBatchMintByType(to, typeId, data);
 
         // define the restriction mode
         for (uint256 j = 0; j < to.length; j++) {
-            _storeRestrictedToOwnerAndApproval[tokensMinted[j]] = Bytes._bytesToUint8(data, 0) == 1; 
+            _storeRestrictedToOwnerAndApproval[tokensMinted[j]] =
+                Bytes._bytesToUint8(data, 0) == 1;
         }
     }
 
@@ -139,10 +164,7 @@ contract CryptoTreasure is BoxWithTimeLock, ERC721TypedMintByLockingERC20, Acces
      * @param boxId id of the box
      * @param unlockTimestamp unlock timestamp
      */
-    function lockBox(
-        uint256 boxId,
-        uint256 unlockTimestamp
-    ) external {
+    function lockBox(uint256 boxId, uint256 unlockTimestamp) external {
         require(_isApprovedOrOwner(_msgSender(), boxId), "e4");
         onlyNotLockedBox(boxId);
         _lockBox(boxId, unlockTimestamp);
@@ -165,7 +187,7 @@ contract CryptoTreasure is BoxWithTimeLock, ERC721TypedMintByLockingERC20, Acces
 
         _storeRestrictedToOwnerAndApproval[boxId] = restriction;
     }
-    
+
     /**
      * @dev Add one type with a range of token id
      * @notice Only admin can execute this function
@@ -175,7 +197,7 @@ contract CryptoTreasure is BoxWithTimeLock, ERC721TypedMintByLockingERC20, Acces
      * @param from first id for this type
      * @param to last id for this type
      * @param data array bytes containing:
-     *                  - the erc20 addres to lock (in first 20 bytes) 
+     *                  - the erc20 addres to lock (in first 20 bytes)
      *                  - the amount to lock (in following 32 bytes)
      *                  - the duration before destroy() is allowed after minting (in following 32 bytes)
      *                  - the duration before mint() is allowed for everyone (in following 32 bytes)
@@ -189,7 +211,9 @@ contract CryptoTreasure is BoxWithTimeLock, ERC721TypedMintByLockingERC20, Acces
     ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         _addType(id, from, to, data);
         _lockedDestructionDuration[id] = Bytes._bytesToUint256(data, 52);
-        _mintStartTimestamp[id] = block.timestamp + Bytes._bytesToUint256(data, 84);
+        _mintStartTimestamp[id] =
+            block.timestamp +
+            Bytes._bytesToUint256(data, 84);
         uint256 numberToReserved = Bytes._bytesToUint256(data, 116);
 
         require(numberToReserved <= to - from + 1, "e21");
@@ -222,7 +246,10 @@ contract CryptoTreasure is BoxWithTimeLock, ERC721TypedMintByLockingERC20, Acces
      *
      * @param _newBaseURI new base URI
      */
-    function updateBaseURI(string calldata _newBaseURI) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function updateBaseURI(string calldata _newBaseURI)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
         baseURI = _newBaseURI;
     }
 
@@ -233,9 +260,7 @@ contract CryptoTreasure is BoxWithTimeLock, ERC721TypedMintByLockingERC20, Acces
      *
      * @param boxId id of the box
      */
-    function _beforeWithdraw(
-        uint256 boxId
-    ) internal override {
+    function _beforeWithdraw(uint256 boxId) internal override {
         super._beforeWithdraw(boxId);
         // Useless as the balance will be computed in the withdraw
         // require(_exists(boxId), "e15");
@@ -251,12 +276,14 @@ contract CryptoTreasure is BoxWithTimeLock, ERC721TypedMintByLockingERC20, Acces
      *
      * @param boxId id of the box
      */
-    function _beforeStore(
-        uint256 boxId
-    ) internal override {
+    function _beforeStore(uint256 boxId) internal override {
         super._beforeStore(boxId);
         require(_exists(boxId), "e15");
-        require(!_storeRestrictedToOwnerAndApproval[boxId] || _isApprovedOrOwner(_msgSender(), boxId), "e7");
+        require(
+            !_storeRestrictedToOwnerAndApproval[boxId] ||
+                _isApprovedOrOwner(_msgSender(), boxId),
+            "e7"
+        );
     }
 
     /**
@@ -264,13 +291,11 @@ contract CryptoTreasure is BoxWithTimeLock, ERC721TypedMintByLockingERC20, Acces
      * @notice Throw if box is locked (from BoxWithTimeLock)
      * @notice Throw if not approved
      * @notice Throw if crypto treasure has been destroyed (from BoxExternal)
-     * @notice Throw if before destroy allowed timestamp 
+     * @notice Throw if before destroy allowed timestamp
      *
      * @param boxId id of the box
      */
-    function _beforeDestroy(
-        uint256 boxId
-    ) internal override {
+    function _beforeDestroy(uint256 boxId) internal override {
         super._beforeDestroy(boxId);
         require(_isApprovedOrOwner(_msgSender(), boxId), "e4");
         require(_isDestructionUnlocked(boxId), "e17");
@@ -282,9 +307,7 @@ contract CryptoTreasure is BoxWithTimeLock, ERC721TypedMintByLockingERC20, Acces
      *
      * @param boxId id of the box
      */
-    function _afterDestroy(
-        uint256 boxId
-    ) internal override {
+    function _afterDestroy(uint256 boxId) internal override {
         _unlockMint(boxId);
     }
 
@@ -294,13 +317,21 @@ contract CryptoTreasure is BoxWithTimeLock, ERC721TypedMintByLockingERC20, Acces
      * @param boxId id of the box
      * @return true if the crypto treasure passed the destroy lock, false otherwise
      */
-    function _isDestructionUnlocked(
-        uint256 boxId
-    ) internal view returns(bool) {
+    function _isDestructionUnlocked(uint256 boxId)
+        internal
+        view
+        returns (bool)
+    {
         return _lockedDestructionEnd[boxId] <= block.timestamp;
     }
 
-    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, AccessControl) returns (bool) {
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(ERC721, AccessControl)
+        returns (bool)
+    {
         return
             interfaceId == type(IERC721).interfaceId ||
             interfaceId == type(IERC721Metadata).interfaceId ||
@@ -309,7 +340,7 @@ contract CryptoTreasure is BoxWithTimeLock, ERC721TypedMintByLockingERC20, Acces
 
     /**
      * @dev Base URI for computing {tokenURI}
-     * @return string baseURI 
+     * @return string baseURI
      */
     function _baseURI() internal view override returns (string memory) {
         return baseURI;

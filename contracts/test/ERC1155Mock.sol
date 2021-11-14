@@ -6,8 +6,7 @@ import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 
 // mock class using ERC1155
 contract ERC1155Mock is ERC1155 {
-    constructor() ERC1155("") {
-    }
+    constructor() ERC1155("") {}
 
     function mintBatch(
         address to,

@@ -49,7 +49,7 @@ interface IBox {
         ERC1155TokenInfos[] erc1155s
     );
 
-    event Destroyed(uint256 indexed boxId);   
+    event Destroyed(uint256 indexed boxId);
 
     function store(
         uint256 boxId,
@@ -85,14 +85,24 @@ interface IBox {
         address payable to
     ) external;
 
-
     function EthBalanceOf(uint256 _boxId) external view returns (uint256);
 
-    function erc20BalanceOf(uint256 _boxId, address _tokenAddress) external view returns (uint256);
+    function erc20BalanceOf(uint256 _boxId, address _tokenAddress)
+        external
+        view
+        returns (uint256);
 
-    function erc721BalanceOf(uint256 _boxId, address _tokenAddress, uint256 _tokenId) external view returns (uint256);
+    function erc721BalanceOf(
+        uint256 _boxId,
+        address _tokenAddress,
+        uint256 _tokenId
+    ) external view returns (uint256);
 
-    function erc1155BalanceOf(uint256 _boxId, address _tokenAddress, uint256 _tokenId) external view returns (uint256);
+    function erc1155BalanceOf(
+        uint256 _boxId,
+        address _tokenAddress,
+        uint256 _tokenId
+    ) external view returns (uint256);
 
     function onERC1155BatchReceived(
         address,
@@ -100,7 +110,7 @@ interface IBox {
         uint256[] calldata,
         uint256[] calldata,
         bytes calldata
-    ) external returns(bytes4);
+    ) external returns (bytes4);
 
     function onERC721Received(
         address,

@@ -17,8 +17,7 @@ abstract contract BoxWithTimeLock is BoxProxy {
      * @dev Constructor
      * @param _baseBoxAddress boxBase address
      */
-    constructor(address _baseBoxAddress) BoxProxy(_baseBoxAddress) {
-    }
+    constructor(address _baseBoxAddress) BoxProxy(_baseBoxAddress) {}
 
     /**
      * @dev lock a box until a timestamp
@@ -26,10 +25,7 @@ abstract contract BoxWithTimeLock is BoxProxy {
      * @param boxId id of the box
      * @param timestamp unlock timestamp
      */
-    function _lockBox(
-        uint256 boxId,
-        uint256 timestamp
-    ) internal virtual {
+    function _lockBox(uint256 boxId, uint256 timestamp) internal virtual {
         _unlockTimestamp[boxId] = timestamp;
         emit BoxLocked(boxId, timestamp);
     }
@@ -40,9 +36,7 @@ abstract contract BoxWithTimeLock is BoxProxy {
      *
      * @param boxId id of the box
      */
-    function _beforeWithdraw(
-        uint256 boxId
-    ) internal override virtual {
+    function _beforeWithdraw(uint256 boxId) internal virtual override {
         onlyNotLockedBox(boxId);
     }
 
@@ -53,9 +47,7 @@ abstract contract BoxWithTimeLock is BoxProxy {
      *
      * @param boxId id of the box
      */
-    function _beforeStore(
-        uint256 boxId
-    ) internal override virtual {
+    function _beforeStore(uint256 boxId) internal virtual override {
         super._beforeStore(boxId);
         onlyNotLockedBox(boxId);
     }
@@ -67,12 +59,10 @@ abstract contract BoxWithTimeLock is BoxProxy {
      *
      * @param boxId id of the box
      */
-    function _beforeDestroy(
-        uint256 boxId
-    ) internal override virtual {
+    function _beforeDestroy(uint256 boxId) internal virtual override {
         super._beforeDestroy(boxId);
         onlyNotLockedBox(boxId);
-    }    
+    }
 
     /**
      * @dev Throw if box is locked

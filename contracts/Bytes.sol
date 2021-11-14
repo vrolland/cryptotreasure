@@ -50,7 +50,7 @@ library Bytes {
         assembly {
             convertedUint8 := mload(add(_bts, startByte))
         }
-        
+
         return convertedUint8;
     }
 
@@ -61,15 +61,21 @@ library Bytes {
      * @param _from extraction starting from this index
      * @return address extracted
      */
-     function _bytesToAddress(bytes memory _bts, uint256 _from) internal pure returns (address) {
+    function _bytesToAddress(bytes memory _bts, uint256 _from)
+        internal
+        pure
+        returns (address)
+    {
         require(_bts.length >= _from + 20, "e0");
         address tempAddress;
 
         assembly {
-            tempAddress := div(mload(add(add(_bts, 0x20), _from)), 0x1000000000000000000000000)
+            tempAddress := div(
+                mload(add(add(_bts, 0x20), _from)),
+                0x1000000000000000000000000
+            )
         }
 
         return tempAddress;
     }
-
 }

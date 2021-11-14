@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./Bytes.sol";
 
 /**
- * @title typed ERC721 
+ * @title typed ERC721
  * @notice every token has a type with optional data
  */
 abstract contract ERC721Typed is ERC721 {
