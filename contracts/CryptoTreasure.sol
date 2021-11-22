@@ -19,7 +19,8 @@ contract CryptoTreasure is
     ERC721TypedMintByLockingERC20,
     AccessControl
 {
-    string private baseURI = "https://crypto-treasures.com/treasure-metadata/";
+    string private baseURI =
+        "https://crypto-treasures.com/treasure-metadata/4/";
 
     // Mapping from box id to restriction
     mapping(uint256 => bool) public _storeRestrictedToOwnerAndApproval;
