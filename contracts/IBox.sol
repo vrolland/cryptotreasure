@@ -1,11 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/token/ERC1155/IERC1155Receiver.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
+
 /**
  * @title Box events and storage
  * @notice Collection of events and storage to handle boxes
  */
-interface IBox {
+interface IBox is IERC165, IERC721Receiver, IERC1155Receiver {
     // ERC721 token information {address and token ids} used for function parameters
     struct ERC721TokenInfos {
         address addr;
@@ -104,18 +108,26 @@ interface IBox {
         uint256 _tokenId
     ) external view returns (uint256);
 
+    function onERC1155Received(
+        address,
+        address,
+        uint256,
+        uint256,
+        bytes calldata
+    ) external override returns (bytes4);
+
     function onERC1155BatchReceived(
         address,
         address,
         uint256[] calldata,
         uint256[] calldata,
         bytes calldata
-    ) external returns (bytes4);
+    ) external override returns (bytes4);
 
     function onERC721Received(
         address,
         address,
         uint256,
         bytes calldata
-    ) external returns (bytes4);
+    ) external override returns (bytes4);
 }

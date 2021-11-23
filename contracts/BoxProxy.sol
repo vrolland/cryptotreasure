@@ -238,6 +238,20 @@ abstract contract BoxProxy is IBox, BoxStorage, ReentrancyGuard {
     }
 
     /**
+     * @dev Handles the receipt of ERC1155 token types
+     * @notice will always revert
+     */
+    function onERC1155Received(
+        address,
+        address,
+        uint256,
+        uint256,
+        bytes calldata
+    ) public pure override returns (bytes4) {
+        revert();
+    }
+
+    /**
      * @dev Handles the receipt of a multiple ERC1155 token types
      * @notice Authorized only if the transfer is operated by this contract
      */

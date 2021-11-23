@@ -294,4 +294,39 @@ contract("CryptoTreasure administration", (accounts) => {
       expect(tokenURI).to.equal("http://127.0.0.1/1");
     });
   });
+
+  describe("supported interface", async () => {
+    const _InterfaceId_ERC165 = "0x01ffc9a7";
+    const _InterfaceId_ERC721 = "0x80ac58cd";
+    const _InterfaceId_ERC721MetaData = "0x5b5e139f";
+    const _InterfaceId_BOX = "0xaf0eefe8";
+    const _InterfaceId_ERC721TokenReceiver = "0x150b7a02";
+    const _InterfaceId_ERC1155TokenReceiver = "0x4e2312e0";
+
+    it("supports introspection", async () => {
+      expect(await cryptoTreasure.supportsInterface(_InterfaceId_ERC165)).to.be
+        .true;
+    });
+    it("supports erc721", async () => {
+      expect(await cryptoTreasure.supportsInterface(_InterfaceId_ERC721)).to.be
+        .true;
+      expect(
+        await cryptoTreasure.supportsInterface(_InterfaceId_ERC721MetaData)
+      ).to.be.true;
+    });
+    it("supports receivers", async () => {
+      expect(
+        await cryptoTreasure.supportsInterface(_InterfaceId_ERC721TokenReceiver)
+      ).to.be.true;
+      expect(
+        await cryptoTreasure.supportsInterface(
+          _InterfaceId_ERC1155TokenReceiver
+        )
+      ).to.be.true;
+    });
+    it("supports box", async () => {
+      expect(await cryptoTreasure.supportsInterface(_InterfaceId_BOX)).to.be
+        .true;
+    });
+  });
 });
