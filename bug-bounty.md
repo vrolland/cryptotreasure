@@ -2,6 +2,8 @@
 
 The cryptotreasure bug bounty program is focused around our smart contracts with a primary interest in the prevention of loss of user funds, by direct draining of locked funds for example.
 
+Bug bounty program on [immunefi.com](https://immunefi.com/bounty/cryptotreasures/).
+
 **Smart Contracts and Blockchain**\*
 
 | Level    |                  |
