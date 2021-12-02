@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "./IBox.sol";
 import "./BoxStorage.sol";
@@ -364,9 +365,10 @@ contract BoxBase is IBox, BoxStorage, Context, OnlyDelegateCall {
         // update the box and check if the amount in the box is sufficient
         _indexedTokens[index] -= amountToWithdraw;
 
-        // transfer the token
+        // Safely transfer the token
         IERC20 token = IERC20(tokenAddress);
-        token.transfer(to, amountToWithdraw);
+
+        SafeERC20.safeTransfer(token, to, amountToWithdraw);
     }
 
     /**
@@ -460,8 +462,13 @@ contract BoxBase is IBox, BoxStorage, Context, OnlyDelegateCall {
 
         IERC20 token = IERC20(tokenAddress);
 
-        // transfer the token to this very contract
-        token.transferFrom(_msgSender(), address(this), amount);
+        // Safely transfer the token to this very contract
+        SafeERC20.safeTransferFrom(
+            token,
+            _msgSender(),
+            address(this),
+            amount
+        );
     }
 
     /**

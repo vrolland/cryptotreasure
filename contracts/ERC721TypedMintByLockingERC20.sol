@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "./ERC721Typed.sol";
 
@@ -47,8 +48,8 @@ contract ERC721TypedMintByLockingERC20 is ERC721Typed {
         ERC20ToLock memory etl = _erc20ToLock[_tokenTypes[tokenId]];
         if (etl.amount != 0) {
             IERC20 erc20 = IERC20(etl.addr);
-            // transfer the tokens to this very contract to lock them
-            erc20.transferFrom(_msgSender(), address(this), etl.amount);
+            // Safely transfer the tokens to this very contract to lock them
+            SafeERC20.safeTransferFrom(erc20, _msgSender(), address(this), etl.amount);
         }
     }
 
@@ -74,8 +75,8 @@ contract ERC721TypedMintByLockingERC20 is ERC721Typed {
         ERC20ToLock memory etl = _erc20ToLock[typeId];
         if (etl.amount != 0) {
             IERC20 erc20 = IERC20(etl.addr);
-            // transfer the tokens to this very contract to lock them
-            erc20.transferFrom(_msgSender(), address(this), etl.amount);
+            // Safely transfer the tokens to this very contract to lock them
+            SafeERC20.safeTransferFrom(erc20, _msgSender(), address(this), etl.amount);
         }
 
         // return the token id
@@ -108,12 +109,8 @@ contract ERC721TypedMintByLockingERC20 is ERC721Typed {
         ERC20ToLock memory etl = _erc20ToLock[typeId];
         if (etl.amount != 0) {
             IERC20 erc20 = IERC20(etl.addr);
-            // transfer the tokens to this very contract to lock them
-            erc20.transferFrom(
-                _msgSender(),
-                address(this),
-                etl.amount * to.length
-            );
+            // Safely transfer the tokens to this very contract to lock them
+            SafeERC20.safeTransferFrom(erc20, _msgSender(), address(this), etl.amount * to.length);
         }
 
         return tokensMinted;
@@ -151,8 +148,8 @@ contract ERC721TypedMintByLockingERC20 is ERC721Typed {
         ERC20ToLock memory etl = _erc20ToLock[_tokenTypes[tokenId]];
         if (etl.amount != 0) {
             IERC20 erc20 = IERC20(etl.addr);
-            // transfer the tokens from this very contract to the owner of the treasure
-            erc20.transfer(ownerOf(tokenId), etl.amount);
+            // Safely transfer the tokens from this very contract to the owner of the treasure
+            SafeERC20.safeTransfer(erc20, ownerOf(tokenId), etl.amount);
         }
     }
 }
