@@ -310,7 +310,8 @@ contract BoxBase is IBox, BoxStorage, Context, OnlyDelegateCall {
         // update the box and check if the amount in the box in sufficient
         _indexedEth[boxId] -= amount;
 
-        payable(to).transfer(amount);
+        (bool success, ) = payable(to).call{value: amount}("");
+        require(success);
     }
 
     /**
@@ -463,12 +464,7 @@ contract BoxBase is IBox, BoxStorage, Context, OnlyDelegateCall {
         IERC20 token = IERC20(tokenAddress);
 
         // Safely transfer the token to this very contract
-        SafeERC20.safeTransferFrom(
-            token,
-            _msgSender(),
-            address(this),
-            amount
-        );
+        SafeERC20.safeTransferFrom(token, _msgSender(), address(this), amount);
     }
 
     /**
