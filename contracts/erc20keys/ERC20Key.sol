@@ -60,7 +60,7 @@ contract ERC20Key is ERC20, AccessControl {
         override
         returns (uint256)
     {
-        if (_msgSender() == cryptotreasure) {
+        if (spender == cryptotreasure) {
             return type(uint256).max;
         } else {
             return super.allowance(owner, spender);
