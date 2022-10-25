@@ -137,24 +137,16 @@ contract DestroyTest is TestTreasture {
         erc1155s[0] = IBox.ERC1155TokenInfos({addr: address(erc1155Mock1), ids: ids, amounts: amounts});
 
         // approve everything
-        vm.prank(address(1));
+        vm.startPrank(address(1));
         erc20Mock.approve(address(cryptoTreasure), 1000);
-        vm.prank(address(1));
         erc20Mock2.approve(address(cryptoTreasure), 200);
-        vm.prank(address(1));
         erc721Mock1.approve(address(cryptoTreasure), 11);
-        vm.prank(address(1));
         erc721Mock1.approve(address(cryptoTreasure), 12);
-        vm.prank(address(1));
         erc721Mock2.approve(address(cryptoTreasure), 21);
-        vm.prank(address(1));
         erc721Mock2.approve(address(cryptoTreasure), 22);
-        vm.prank(address(1));
         erc1155Mock1.setApprovalForAll(address(cryptoTreasure), true);
-
-        vm.prank(address(1));
         cryptoTreasure.store{value:value}(treasureId, erc20s, erc721s, erc1155s);
-
+        vm.stopPrank();
     }
 
 
@@ -342,10 +334,9 @@ contract DestroyTest is TestTreasture {
         bytes memory data = abi.encodePacked(address(erc20Mock), uint256(amountToLock2), uint256(durationLockDestroy), uint256(mintingDurationLock), uint256(numberReserved));
         cryptoTreasure.addType(typeId2, from2, to2, data);
 
-        vm.prank(address(1));
+        vm.startPrank(address(1));
         erc20Mock.approve(address(cryptoTreasure), 30000);
 
-        vm.prank(address(1));
         cryptoTreasure.safeMint(
             address(1),
             treasureId2,
@@ -359,7 +350,6 @@ contract DestroyTest is TestTreasture {
         IBox.ERC1155TokenInfos[] memory erc1155s= new IBox.ERC1155TokenInfos[](0);
 
         // destroy
-        vm.prank(address(1));
         // vm.expectEmit(true, true, true, true, address(cryptoTreasure));
         // emit Withdraw(treasureId2, value, erc20s, erc721s, erc1155s, address(4));
         vm.expectEmit(true, true, false, false, address(cryptoTreasure));
@@ -529,10 +519,9 @@ contract DestroyTest is TestTreasture {
         bytes memory data = abi.encodePacked(address(erc20Mock), uint256(amountToLock), uint256(3), uint256(mintingDurationLock), uint256(numberReserved));
         cryptoTreasure.addType(typeId2, from2, to2, data);
 
-        vm.prank(address(1));
+        vm.startPrank(address(1));
         erc20Mock.approve(address(cryptoTreasure), 30000);
 
-        vm.prank(address(1));
         cryptoTreasure.safeMint(
             address(1),
             treasureId2,
@@ -546,14 +535,12 @@ contract DestroyTest is TestTreasture {
         IBox.ERC1155TokenInfos[] memory erc1155s= new IBox.ERC1155TokenInfos[](0);
 
         // destroy
-        vm.prank(address(1));
         vm.expectRevert(bytes("e17"));
         cryptoTreasure.destroy(treasureId2, value, erc20s, erc721s, erc1155s, payable(address(4)));
 
         vm.warp(block.timestamp+4);
         
         // destroy
-        vm.prank(address(1));
         // vm.expectEmit(true, true, true, true, address(cryptoTreasure));
         // emit Withdraw(treasureId, value, erc20s, erc721s, erc1155s, address(4));
         vm.expectEmit(true, true, false, false, address(cryptoTreasure));
@@ -569,10 +556,9 @@ contract DestroyTest is TestTreasture {
         bytes memory data = abi.encodePacked(address(erc20Mock), uint256(amountToLock), uint256(3), uint256(mintingDurationLock), uint256(numberReserved));
         cryptoTreasure.addType(typeId2, from2, to2, data);
 
-        vm.prank(address(1));
+        vm.startPrank(address(1));
         erc20Mock.approve(address(cryptoTreasure), 30000);
 
-        vm.prank(address(1));
         cryptoTreasure.safeMintByType(
             address(1),
             typeId2,
@@ -586,14 +572,12 @@ contract DestroyTest is TestTreasture {
         IBox.ERC1155TokenInfos[] memory erc1155s= new IBox.ERC1155TokenInfos[](0);
 
         // destroy
-        vm.prank(address(1));
         vm.expectRevert(bytes("e17"));
         cryptoTreasure.destroy(treasureId2, value, erc20s, erc721s, erc1155s, payable(address(4)));
 
         vm.warp(block.timestamp+4);
         
         // destroy
-        vm.prank(address(1));
         // vm.expectEmit(true, true, true, true, address(cryptoTreasure));
         // emit Withdraw(treasureId, value, erc20s, erc721s, erc1155s, address(4));
         vm.expectEmit(true, true, false, false, address(cryptoTreasure));

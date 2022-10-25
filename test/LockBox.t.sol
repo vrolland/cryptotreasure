@@ -140,24 +140,16 @@ contract LockBoxTest is TestTreasture {
         erc1155s[0] = IBox.ERC1155TokenInfos({addr: address(erc1155Mock1), ids: ids, amounts: amounts});
 
         // approve everything
-        vm.prank(address(1));
+        vm.startPrank(address(1));
         erc20Mock.approve(address(cryptoTreasure), 1000);
-        vm.prank(address(1));
         erc20Mock2.approve(address(cryptoTreasure), 200);
-        vm.prank(address(1));
         erc721Mock1.approve(address(cryptoTreasure), 11);
-        vm.prank(address(1));
         erc721Mock1.approve(address(cryptoTreasure), 12);
-        vm.prank(address(1));
         erc721Mock2.approve(address(cryptoTreasure), 21);
-        vm.prank(address(1));
         erc721Mock2.approve(address(cryptoTreasure), 22);
-        vm.prank(address(1));
         erc1155Mock1.setApprovalForAll(address(cryptoTreasure), true);
-
-        vm.prank(address(1));
         cryptoTreasure.store{value:value}(treasureId, erc20s, erc721s, erc1155s);
-
+        vm.stopPrank();
     }
 
     function testLockBox() public {
@@ -196,7 +188,7 @@ contract LockBoxTest is TestTreasture {
     function testWithdrawOnLockedBox() public {
         uint256 unlockTimestamp = block.timestamp + lockTimeSpan;
         // destroy
-        vm.prank(address(1));
+        vm.startPrank(address(1));
         vm.expectEmit(true, true, false, false, address(cryptoTreasure));
         emit BoxLocked(treasureId, unlockTimestamp);
         cryptoTreasure.lockBox(treasureId, unlockTimestamp);
@@ -210,14 +202,12 @@ contract LockBoxTest is TestTreasture {
         IBox.ERC1155TokenInfos[] memory erc1155s= new IBox.ERC1155TokenInfos[](0);
 
         // store
-        vm.prank(address(1));
         vm.expectRevert(bytes("e8"));
         cryptoTreasure.withdraw(treasureId, value, erc20s, erc721s, erc1155s, payable(address(4)));
 
         // vm.wrap(unlockTimestamp);
         vm.warp(block.timestamp+lockTimeSpan);
 
-        vm.prank(address(1));
         vm.expectEmit(true, true, true, true, address(cryptoTreasure));
         emit Withdraw(treasureId, value, erc20s, erc721s, erc1155s, address(4));
         cryptoTreasure.withdraw(treasureId, value, erc20s, erc721s, erc1155s, payable(address(4)));

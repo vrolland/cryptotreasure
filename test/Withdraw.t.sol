@@ -123,26 +123,18 @@ contract WithdrawTest is TestTreasture {
         amounts = new uint256[](1);
         ids[0] = 111; amounts[0] = 123;
         erc1155s[0] = IBox.ERC1155TokenInfos({addr: address(erc1155Mock1), ids: ids, amounts: amounts});
-
+        
         // approve everything
-        vm.prank(address(1));
+        vm.startPrank(address(1));
         erc20Mock.approve(address(cryptoTreasure), 1000);
-        vm.prank(address(1));
         erc20Mock2.approve(address(cryptoTreasure), 200);
-        vm.prank(address(1));
         erc721Mock1.approve(address(cryptoTreasure), 11);
-        vm.prank(address(1));
         erc721Mock1.approve(address(cryptoTreasure), 12);
-        vm.prank(address(1));
         erc721Mock2.approve(address(cryptoTreasure), 21);
-        vm.prank(address(1));
         erc721Mock2.approve(address(cryptoTreasure), 22);
-        vm.prank(address(1));
         erc1155Mock1.setApprovalForAll(address(cryptoTreasure), true);
-
-        vm.prank(address(1));
         cryptoTreasure.store{value:value}(treasureId, erc20s, erc721s, erc1155s);
-
+        vm.stopPrank();
     }
 
 

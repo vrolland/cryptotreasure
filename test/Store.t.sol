@@ -122,26 +122,22 @@ contract StoreTest is TestTreasture {
         IBox.ERC721TokenInfos[] memory notErc721s= new IBox.ERC721TokenInfos[](0);
 
         // approve everything
-        vm.prank(address(1));
+        // approve everything
+        vm.startPrank(address(1));
         erc20Mock.approve(address(cryptoTreasure), 1000);
-        vm.prank(address(1));
         erc20Mock2.approve(address(cryptoTreasure), 200);
-        vm.prank(address(1));
         erc721Mock1.approve(address(cryptoTreasure), 11);
-        vm.prank(address(1));
         erc721Mock1.approve(address(cryptoTreasure), 12);
-        vm.prank(address(1));
         erc721Mock2.approve(address(cryptoTreasure), 21);
-        vm.prank(address(1));
         erc721Mock2.approve(address(cryptoTreasure), 22);
-        vm.prank(address(1));
         erc1155Mock1.setApprovalForAll(address(cryptoTreasure), true);
+        
 
         // store
-        vm.prank(address(1));
         vm.expectEmit(true, true, true, true, address(cryptoTreasure));
         emit Store(treasureId, value, erc20s, erc721s, erc1155s);
         cryptoTreasure.store{value:value}(treasureId, erc20s, erc721s, erc1155s);
+        vm.stopPrank();
 
         // check treasure
         checkTreasure(
@@ -200,17 +196,14 @@ contract StoreTest is TestTreasture {
         IBox.ERC1155TokenInfos[] memory erc1155s= new IBox.ERC1155TokenInfos[](0);
 
         // no allowance
-        vm.prank(address(1));
+        vm.startPrank(address(1));
         vm.expectRevert(bytes("e23"));
         cryptoTreasure.store{value:value}(treasureId, erc20s, erc721s, erc1155s);
 
         // no balance
-        vm.prank(address(1));
         erc20Mock.transfer(address(2), 100000000000000);
-        vm.prank(address(1));
         erc20Mock.approve(address(cryptoTreasure), 1000);
         
-        vm.prank(address(1));
         vm.expectRevert(bytes("e23"));
         cryptoTreasure.store{value:value}(treasureId, erc20s, erc721s, erc1155s);
     }
@@ -226,18 +219,15 @@ contract StoreTest is TestTreasture {
         IBox.ERC1155TokenInfos[] memory erc1155s= new IBox.ERC1155TokenInfos[](0);
         
         // no allowance
-        vm.prank(address(1));
+        vm.startPrank(address(1));
         vm.expectRevert(bytes("e23"));
         cryptoTreasure.store{value:value}(treasureId, erc20s, erc721s, erc1155s);
 
 
         // no balance
-        vm.prank(address(1));
         erc721Mock1.approve(address(cryptoTreasure), 11);
-        vm.prank(address(1));
         erc721Mock1.safeTransferFrom(address(1), address(2), 11);
         
-        vm.prank(address(1));
         vm.expectRevert(bytes("e23"));
         cryptoTreasure.store{value:value}(treasureId, erc20s, erc721s, erc1155s);
     }
@@ -254,18 +244,14 @@ contract StoreTest is TestTreasture {
         erc1155s[0] = IBox.ERC1155TokenInfos({addr: address(erc1155Mock1), ids: ids, amounts: amounts});
 
         // no allowance
-        vm.prank(address(1));
+        vm.startPrank(address(1));
         vm.expectRevert(bytes("e23"));
         cryptoTreasure.store{value:value}(treasureId, erc20s, erc721s, erc1155s);
 
-        
         // no balance
-        vm.prank(address(1));
         erc1155Mock1.setApprovalForAll(address(cryptoTreasure), true);
-        vm.prank(address(1));
         erc1155Mock1.safeTransferFrom(address(1), address(2), 111, 1000, "");
         
-        vm.prank(address(1));
         vm.expectRevert(bytes("e23"));
         cryptoTreasure.store{value:value}(treasureId, erc20s, erc721s, erc1155s);
     }
