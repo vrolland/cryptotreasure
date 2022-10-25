@@ -343,7 +343,7 @@ contract CryptoTreasure is
     function supportsInterface(bytes4 interfaceId)
         public
         view
-        override(ERC721, AccessControl, IERC165)
+        override(ERC721, AccessControl, IERC165, BoxStorage)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
