@@ -65,3 +65,11 @@ To unlock the erc20 tokens locked after minting, the internal function \_unlockM
 ## Bytes.sol
 
 Internal library to extract data from Bytes.
+
+# Developers
+
+```
+forge install OpenZeppelin/openzeppelin-contracts
+forge build
+forge test
+```
