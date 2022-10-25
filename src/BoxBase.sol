@@ -434,7 +434,7 @@ contract BoxBase is IBox, BoxStorage, Context, OnlyDelegateCall {
                 abi.encodePacked(boxId, tokenAddress, tokenIds[j])
             );
 
-            require(_indexedTokens[index] == 0, "e01");
+            require(_indexedTokens[index] == 0, "e1");
 
             // update the box
             _indexedTokens[index] = 1;
