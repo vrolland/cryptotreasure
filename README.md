@@ -1,6 +1,8 @@
 # CryptoTreasures
 
-Crypto treasures are live on testnet: [Crypto Treasure website](https://crypto-treasures.com/)
+<!--
+Crypto treasures are live on testnet: [Crypto Treasure website](https://crypto-treasures.com/) 
+-->
 
 Bug bounty program on [immunefi.com](https://immunefi.com/bounty/cryptotreasures/) is closed for now.
 
