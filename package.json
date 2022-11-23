@@ -1,0 +1,35 @@
+{
+  "name": "cryptotreasure-foundry",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "forge-install": "forge install OpenZeppelin/openzeppelin-contracts",
+    "build": "forge build",
+    "test": "forge test",
+    "node": "hardhat node",
+    "deploy": "hardhat run script/deploy-localhost.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vrolland/cryptotreasure-foundry.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vrolland/cryptotreasure-foundry/issues"
+  },
+  "homepage": "https://github.com/vrolland/cryptotreasure-foundry#readme",
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "2.2.1",
+    "ethers": "5.7.2",
+    "hardhat": "2.12.2",
+    "hardhat-preprocessor": "0.1.5",
+    "ts-node": "10.9.1",
+    "typescript": "4.9.3"
+  }
+}
