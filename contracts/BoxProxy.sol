@@ -289,7 +289,7 @@ abstract contract BoxProxy is IBox, BoxStorage, ReentrancyGuard {
      *
      * @param boxId id of the box
      */
-    function onlyNotBrokenBox(uint256 boxId) internal view {
+    function onlyNotDestroyedBox(uint256 boxId) internal view {
         require(!destroyedBoxes[boxId], "e3");
     }
 
@@ -307,7 +307,7 @@ abstract contract BoxProxy is IBox, BoxStorage, ReentrancyGuard {
      * @param boxId id of the box
      */
     function _beforeStore(uint256 boxId) internal virtual {
-        onlyNotBrokenBox(boxId);
+        onlyNotDestroyedBox(boxId);
     }
 
     /**
@@ -317,7 +317,7 @@ abstract contract BoxProxy is IBox, BoxStorage, ReentrancyGuard {
      * @param boxId id of the box
      */
     function _beforeDestroy(uint256 boxId) internal virtual {
-        onlyNotBrokenBox(boxId);
+        onlyNotDestroyedBox(boxId);
     }
 
     /**

@@ -342,8 +342,8 @@ contract BoxBase is IBox, BoxStorage, Context, OnlyDelegateCall {
             // update balance to avoid reentrancy
             delete _indexedTokens[index];
 
-            // transfer the token to the owner of the box
-            token.transferFrom(address(this), to, tokenId);
+            // transfer the token to an external address
+            token.safeTransferFrom(address(this), to, tokenId);
         }
     }
 
@@ -434,7 +434,7 @@ contract BoxBase is IBox, BoxStorage, Context, OnlyDelegateCall {
                 abi.encodePacked(boxId, tokenAddress, tokenIds[j])
             );
 
-            require(_indexedTokens[index] == 0, "e1");
+            require(_indexedTokens[index] == 0, "e01");
 
             // update the box
             _indexedTokens[index] = 1;
