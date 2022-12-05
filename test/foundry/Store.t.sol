@@ -309,4 +309,27 @@ contract StoreTest is TestTreasture {
         vm.expectRevert(bytes("e23"));
         cryptoTreasure.store{value:value}(treasureId, erc20s, erc721s, erc1155s);
     }
+
+
+    function testStoreErc721AsErc20() public {
+        uint256 id721 = 11;
+
+        // set up store
+        uint256 value = 0;
+        IBox.ERC20TokenInfos[] memory erc20s = new IBox.ERC20TokenInfos[](1);
+        erc20s[0] = IBox.ERC20TokenInfos({addr: address(erc721Mock1), amount: id721});
+        IBox.ERC721TokenInfos[] memory erc721s= new IBox.ERC721TokenInfos[](0);
+        IBox.ERC1155TokenInfos[] memory erc1155s= new IBox.ERC1155TokenInfos[](0);
+        IBox.ERC721TokenInfos[] memory notErc721s= new IBox.ERC721TokenInfos[](0);
+
+        // approve everything
+        vm.prank(address(1));
+        cryptoKitties.approve(address(cryptoTreasure), id721);
+
+        // store
+        vm.prank(address(1));
+        vm.expectRevert(bytes("e23"));
+        cryptoTreasure.store{value:value}(treasureId, erc20s, erc721s, erc1155s);
+    }
+
 }

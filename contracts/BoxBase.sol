@@ -465,6 +465,10 @@ contract BoxBase is IBox, BoxStorage, Context, OnlyDelegateCall {
 
         // Safely transfer the token to this very contract
         SafeERC20.safeTransferFrom(token, _msgSender(), address(this), amount);
+
+        // Ensure that the token is not an erc721
+        (bool success, ) = tokenAddress.call(abi.encodeWithSignature("ownerOf(uint256)", amount));
+        require(!success, "e24");
     }
 
     /**
