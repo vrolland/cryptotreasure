@@ -324,7 +324,7 @@ contract StoreTest is TestTreasture {
 
         // approve everything
         vm.prank(address(1));
-        cryptoKitties.approve(address(cryptoTreasure), id721);
+        erc721Mock1.approve(address(cryptoTreasure), id721);
 
         // store
         vm.prank(address(1));
